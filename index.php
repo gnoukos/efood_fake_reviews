@@ -19,7 +19,7 @@
                 <div class="input-wrap first">
                     <div class="input-field first">
 
-                        <input type="text" name="shopurl" placeholder="Π.Χ: https://www.e-food.gr/delivery/city/shop" oninvalid="this.setCustomValidity('Εισάγετε URL')" required />
+                        <input type="text" name="shopurl" placeholder="Π.Χ: https://www.e-food.gr/delivery/city/shop" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Εισάγετε URL')" required />
                     </div>
                 </div>
 
