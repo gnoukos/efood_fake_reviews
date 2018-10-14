@@ -34,8 +34,11 @@
 
                     document.getElementById("real-stars").innerHTML = "Πραγματικά αστέρια: " + jsonResponse.realStars + "/5";
 
+                    document.getElementById("loader").setAttribute("style", "display: none;")
+
+
                 }else{
-                    document.getElementById("stars").innerHTML = "Μη έγκυρο URL!";
+                    document.getElementById("loader").innerHTML = "<p>Μη έγκυρο URL!</p>";
                 }
             }
         };
@@ -51,7 +54,8 @@
             <div clas="back"><button class="btn" type="submit" onclick="window.location.href='index.php';">Πίσω</button></div>
             <div class="shop"><img id="shop-logo" src=""><span id="shop-title"></span></div>
             <div id="hr"></div>
-            <p id="stars">Loading..</p>
+            <div id="loader"><img src="images/Spinner-1s-200px.gif" ></p></div>
+            <p id="stars"></p>
             <p id="fake-percent"></p>
             <p id="real-stars"></p>
         </div>

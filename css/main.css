@@ -1116,7 +1116,7 @@ div.transbox {
   padding-top: 20px;
 }
 
-#fake-percent ,#stars ,#real-stars{
+#fake-percent ,#stars ,#real-stars, #loader{
   padding-left: 20px;
   padding-right: 20px;
   font-size: 20px;
