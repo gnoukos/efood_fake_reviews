@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="s013">
-    <form action="calculate.php" method="post">
+    <form action="results.php" method="post">
         <fieldset>
             <legend>Βάλε το URL του Καταστήματος</legend>
         </fieldset>
@@ -19,7 +19,7 @@
                 <div class="input-wrap first">
                     <div class="input-field first">
 
-                        <input type="text" name="shopurl" placeholder="Π.Χ: https://www.e-food.gr/delivery/city/shop" />
+                        <input type="text" name="shopurl" placeholder="Π.Χ: https://www.e-food.gr/delivery/city/shop" oninvalid="this.setCustomValidity('Εισάγετε URL')" required />
                     </div>
                 </div>
 
@@ -28,14 +28,5 @@
         </div>
     </form>
 </div>
-<script src="js/extention/choices.js"></script>
-<script>
-    const choices = new Choices('[data-trigger]',
-        {
-            searchEnabled: false,
-            itemSelectText: '',
-        });
-
-</script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</body>
 </html>

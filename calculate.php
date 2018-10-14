@@ -7,8 +7,6 @@ $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 $MAX_FREQ=3;
 $DATE_DIFF = 7;
 
-
-
 if(isset($_POST['shopurl'])) {
 
     if(preg_match('/https:\/\/www\.e-food\.gr\/delivery\/.+/m',$_POST['shopurl'])){
@@ -24,85 +22,70 @@ if(isset($_POST['shopurl'])) {
             goto abort;
         }
 
-        preg_match_all($re, $storepage, $matches, PREG_SET_ORDER, 0);
-
         $storeID = $matches[0][1];
 
-
-
-
+        $shop->logo = $matches[0][0];
 
         $storeReviesRaw = file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $storeID . "/ratings?limit=10000&comment_only=false");
 
         $storeReviesDecoded = (json_decode($storeReviesRaw));
 
-        $starJson = json_decode(file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $storeID));
+        $shopInfo = json_decode(file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $storeID));
 
-        $stars = $starJson->data->information->average_rating;
+        $stars = $shopInfo->data->information->average_rating;
 
         $stars = round($stars, 1);
 
+        $shop_title = $shopInfo->data->information->title;
+
         $shop->stars=$stars;
+
+        $shop->title=$shop_title;
 
         $comments=array();
 
+        $starSum=0;
+
         foreach ($storeReviesDecoded->data as $jobj){
-
-
-
+            $starSum += $jobj->overall_numeric;
             if($jobj->comment=="" && $jobj->overall_numeric==5) {
-
                 array_push($comments,$jobj);
-
             }
-
-
         }
+
+        $shop->sum=$starSum;
 
         $arrNames=array();
         $arrDates=array();
 
         foreach ($comments as $comment){
-
             if( isset($arrNames[$comment->first_name]) ) {
                 $arrNames[$comment->first_name]++;
-
-            }
-            else{
+            }else{
                 $arrNames[$comment->first_name] = 0;
             }
-
             $arrDates[$comment->first_name][]=$comment->created;
-
-
         }
 
-
-        /*foreach ($arrNames as $key => $value){
-            if($value>0){
-                $value++;
-                echo "<div> Name: " . $key . " displayed " .$value ." times.</div>";
-            }
-        }*/
-
         $punish_points = punish_points($arrNames, $arrDates);
-        $score = $punish_points= round(($punish_points/sizeof($storeReviesDecoded->data))*100);
+
+        $score = round(($punish_points/sizeof($storeReviesDecoded->data))*100);
+
+        $realStars = round(($starSum - $punish_points*5)/(sizeof($storeReviesDecoded->data)-$punish_points), 1);
 
         $shop->score = $score;
 
+        $shop->realStars = $realStars;
 
+        $shop->punishPoints = $punish_points;
+
+        $shop->totalReviews = sizeof($storeReviesDecoded->data);
     }
-
     else {
-
         abort:
         $shop->result = false;
-
     }
-
-}
-
-else{
+}else{
     $shop->result = false;
 }
 
