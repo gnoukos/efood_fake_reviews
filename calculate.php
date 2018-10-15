@@ -1,8 +1,8 @@
 <?php
 
-$shop = new stdClass();
-
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+$shop = new stdClass();
 
 $MAX_FREQ=3;
 $DATE_DIFF = 7;
@@ -13,52 +13,46 @@ if(isset($_POST['shopurl'])) {
 
         $shop->result=true;
 
-        $storepage = get_data($_POST['shopurl']);
+        $storeHtmlPage = get_data($_POST['shopurl']);
+        
+        $regEx = '/https:\/\/www\.e-food\.gr\/shop\/(\d+)\/logo/m';
 
-
-        $re = '/https:\/\/www\.e-food\.gr\/shop\/(\d+)\/logo/m';
-
-        if (!preg_match_all($re, $storepage, $matches, PREG_SET_ORDER, 0)){
+        if (!preg_match_all($regEx, $storeHtmlPage, $matches, PREG_SET_ORDER, 0)){
             goto abort;
         }
 
-        $storeID = $matches[0][1];
+        $shop->id = $matches[0][1];
 
         $shop->logo = $matches[0][0];
 
-        $storeReviesRaw = file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $storeID . "/ratings?limit=10000&comment_only=false");
+        $shopRatings = json_decode(file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $shop->id . "/ratings?limit=10000&comment_only=false"));
 
-        $storeReviesDecoded = (json_decode($storeReviesRaw));
-
-        $shopInfo = json_decode(file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $storeID));
+        $shopInfo = json_decode(file_get_contents("https://api.e-food.gr/api/v1/restaurants/". $shop->id));
 
         $stars = $shopInfo->data->information->average_rating;
 
-        $stars = round($stars, 1);
+        $shop->stars = round($stars, 1);
 
-        $shop_title = $shopInfo->data->information->title;
-
-        $shop->stars=$stars;
-
-        $shop->title=$shop_title;
-
-        $comments=array();
+        $shop->title = $shopInfo->data->information->title;
+        
+        
+        
+        $SuspiciousReviews=array();
 
         $starSum=0;
 
-        foreach ($storeReviesDecoded->data as $jobj){
-            $starSum += $jobj->overall_numeric;
-            if($jobj->comment=="" && $jobj->overall_numeric==5) {
-                array_push($comments,$jobj);
+        foreach ($shopRatings->data as $shopRating){
+            $starSum += $shopRating->overall_numeric;
+            if($shopRating->comment=="" && $shopRating->overall_numeric==5) {
+                array_push($SuspiciousReviews,$shopRating);
             }
         }
 
-        $shop->sum=$starSum;
 
         $arrNames=array();
         $arrDates=array();
 
-        foreach ($comments as $comment){
+        foreach ($SuspiciousReviews as $comment){
             if( isset($arrNames[$comment->first_name]) ) {
                 $arrNames[$comment->first_name]++;
             }else{
@@ -67,19 +61,13 @@ if(isset($_POST['shopurl'])) {
             $arrDates[$comment->first_name][]=$comment->created;
         }
 
-        $punish_points = punish_points($arrNames, $arrDates);
+        $shop->punishPoints = punish_points($arrNames, $arrDates);
 
-        $score = round(($punish_points/sizeof($storeReviesDecoded->data))*100);
+        $shop->score = round(($shop->punishPoints/sizeof($shopRatings->data))*100);
 
-        $realStars = round(($starSum - $punish_points*5)/(sizeof($storeReviesDecoded->data)-$punish_points), 1);
+        $shop->realStars = round(($starSum - $shop->punishPoints*5)/(sizeof($shopRatings->data)-$shop->punishPoints), 1);
 
-        $shop->score = $score;
-
-        $shop->realStars = $realStars;
-
-        $shop->punishPoints = $punish_points;
-
-        $shop->totalReviews = sizeof($storeReviesDecoded->data);
+        $shop->totalReviews = sizeof($shopRatings->data);
     }
     else {
         abort:
@@ -89,8 +77,8 @@ if(isset($_POST['shopurl'])) {
     $shop->result = false;
 }
 
-$myJSON = json_encode($shop);
-echo $myJSON;
+$shopData = json_encode($shop);
+echo $shopData;
 
 
 function get_data($url) {
