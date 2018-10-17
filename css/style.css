@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700&subset=greek');
+
+*,
+*::before,
+*::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 10px;
+    font-family: 'Noto Sans', sans-serif;
+    background: url("../images/bg.png");
+    background-size: cover;
+    background-position: center center;
+}
+
+.error__message{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 1.9rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 2rem;
+    background-color: #ffc600;
+}
+
+.card, .loader{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.card{
+    opacity: 0;
+    transition: opacity 0.2s;
+    text-align: center;
+}
+
+.card__box{
+    max-width: 45rem;
+    text-align: center;
+    border-radius: 4rem;
+    overflow: hidden;
+
+    background-color: #ffc600;
+}
+
+.card__header{
+    background-color: #383A3F;
+    color: #E0E3DA;
+    padding: 6rem;
+}
+
+.card__image{
+    width: 80%;
+    border-radius: 50%;
+    border: 0.5rem solid #ffc600;
+}
+
+.card__title{
+    margin-top: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.2rem;
+}
+
+.card__body{
+    padding: 3rem;
+}
+
+.fake__reviews, .stars{
+    display: flex;
+    align-items: center;
+}
+
+.fake__reviews{
+    justify-content: space-between;
+}
+
+.stars{
+    justify-content: space-around;
+}
+
+.fake__reviews span{
+    display: block;
+}
+
+.fake__reviews__title{
+    flex: 0 0 50%;
+    font-size: 1.6rem;
+    margin-right: 2rem;
+}
+
+#container {
+    flex: 1;
+    position: relative;
+}
+
+.stars{
+    margin-top: 3rem;
+}
+
+.stars__title{
+    flex: 0 0 50%;
+    font-size: 1.4rem;
+}
+
+.stars__outer {
+    position: relative;
+    display: inline-block;
+    font-size: 1.5rem;
+    justify-self: flex-start;
+}
+  
+  .stars__inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0%;
+    transition: width 2s ease-in-out 0.5s;
+  }
+  
+  .stars__outer::before {
+    content: "\f005 \f005 \f005 \f005 \f005";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 2.2rem;
+    color: #fff;
+  }
+  
+  .stars__inner::before {
+    content: "\f005 \f005 \f005 \f005 \f005";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 2.2rem;
+    color: #383A3F;
+  }
+
+  .stars__rating{
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+  }
+
+
+  @media screen and (max-width: 600px) {
+    .card__box{
+        max-width: 27rem;
+    }
+
+    .card__image{
+        width: 60%;
+    }
+    
+    .fake__reviews__title{
+        text-align: left;
+        flex: 0 0 10%;
+    }
+  }
