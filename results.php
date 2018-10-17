@@ -7,58 +7,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="colorlib.com">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link href="css/main.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
     <title>(e)food | fake reviews</title>
-    <script>
-        var shop = "<?php echo $shopurl; ?>";
-        var jsonResponse;
-        var xhttp = new XMLHttpRequest();
-
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                console.log(shop);
-                jsonResponse = JSON.parse(this.responseText);
-
-                if(jsonResponse.result == true) {
-
-                    document.getElementById("hr").innerHTML = "<hr>";
-
-                    document.getElementById("shop-logo").src = jsonResponse.logo;
-
-                    document.getElementById("shop-title").innerHTML = jsonResponse.title;
-
-                    document.getElementById("fake-percent").innerHTML = "Ποσοστό ψεύτικων Reviews: " + jsonResponse.score + "%";
-
-                    document.getElementById("stars").innerHTML = "Αστέρια στο efood: " + jsonResponse.stars + "/5";
-
-                    document.getElementById("real-stars").innerHTML = "Πραγματικά αστέρια: " + jsonResponse.realStars + "/5";
-
-                    document.getElementById("loader").setAttribute("style", "display: none;")
-
-
-                }else{
-                    document.getElementById("loader").innerHTML = "<p>Μη έγκυρο URL!</p>";
-                }
-            }
-        };
-        xhttp.open("POST", "calculate.php", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("shopurl="+shop);
-
-    </script>
+    <script>var shop = "<?php echo $shopurl; ?>";</script>
 </head>
 <body>
-<div class="s013">
-        <div class="transbox">
-            <div clas="back"><button class="btn" type="submit" onclick="window.location.href='index.php';">Πίσω</button></div>
-            <div class="shop"><img id="shop-logo" src=""><span id="shop-title"></span></div>
-            <div id="hr"></div>
-            <div id="loader"><img src="images/Spinner-1s-200px.gif" ></p></div>
-            <p id="stars"></p>
-            <p id="fake-percent"></p>
-            <p id="real-stars"></p>
-        </div>
+
+<div class="loader__box">
+    <img src="images/gif.gif" class="loader">
 </div>
+
+
+<div class="card">
+    <div class="card__box">
+
+        <div class="card__header">
+          <img src="" alt="Logo" class="card__image">
+          <h1 class="card__title"></h1>
+        </div>
+        
+        <div class="card__body">
+          <div class="fake__reviews">
+            <h2 class="fake__reviews__title">Ποσοστό ψεύτικων <span>Reviews : </span></h2>
+            <div id="container"></div>
+          </div>
+          
+          <!-- EFOOD STARS -->
+          <div class="stars">
+            <h2 class="stars__title">Αστέρια στο efood : </h2>
+            <div class="stars__outer">
+                <div class="stars__inner"></div>
+            </div>
+            <span class="stars__rating"></span>
+          </div>
+
+          <!-- REAL STARS -->
+          <div class="stars">
+              <h2 class="stars__title">Πραγματικά αστέρια : </h2>
+              <div class="stars__outer">
+                  <div class="stars__inner"></div>
+              </div>
+              <span class="stars__rating"></span>
+          </div>
+          <!-- BACK BUTTON -->
+
+        </div>
+    </div>
+</div>
+
+<script src="progressbar.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
